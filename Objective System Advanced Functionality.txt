@@ -1,0 +1,127 @@
+// In this file, we will delve into the more 'Advanced' methods of objective markers
+// Such as: NPC-based, map-based or object-based triggers
+
+// First off, NPC
+
+// This is a basic Gunship trigger
+for _,Gunship in pairs(ents.FindByClass("npc_combinegunship")) do
+if GunshipDead == false then
+	ActiveObjective = "- Do Stuff\n- Destroy the Gunship"
+	DeathObjective = "- Do Stuff - Objective Failed\n- Destroy the Gunship - Objective Failed"
+end
+end
+// we search for a gunship
+// If a gunship is found on the map, and the unique variable 'GunshipDead' is false (which it should be)
+// Then update the active objective to represent the new text
+
+// Now, we find out if the Gunship has died
+for _,GunshipBody in pairs(ents.FindByClass("prop_physics")) do
+// Dead gunships drop physics objects, so this is how we find that out
+if GunshipBody:GetModel() == "models/gibs/gunship_gibs_midsection.mdl" and GunshipDead == false then
+// Get the midsection of the Gunship corpse, it works well enough
+	ActiveObjective = "- Do Stuff\n- Destroy the Gunship - Objective Complete"
+	DeathObjective = "- Do Stuff - Objective Failed"
+	GunshipDead = true
+// Update the text, and then change the variable so that the text remains unchanged
+	RemoveDelay = CurTime() + 5
+end
+end
+
+// Then, we remove it at the bottom of the file again
+
+// Here is a slighty different trigger method
+// We use the bodygroup of an object on the map
+// In this case, a Combine Forcefield
+
+for _,ForceField in pairs(ents.FindByClass("prop_dynamic")) do
+// The forcefields are referred to as prop_dynamic
+if ForceField:GetModel() == "models/props_combine/combine_fence01a.mdl" and ForceField:GetSkin() == 1 then
+// This is one of the models									GetSkin refers to the bodygroup
+// In this case GetSkin() 1 means the gate is turned off
+// 0 means the gate is on
+	ActiveObjective = "- Do Stuff\n- Disable the forcefield - Objective Complete"
+	DeathObjective = "- Do Stuff - Objective Failed"
+	SubObjSpot = nil
+	RemoveDelay = CurTime() + 5
+	CurObjMarker = CurObjMarker +  1
+// Since the gate is inactive, we update the text, add a delay and move to the next objective marker
+end
+end
+
+// However sometimes there are more than one object on a map
+// This means we have to get more specific
+// In this example, we use the position of the object to only trigger on a specific change
+
+for _,Confisc in pairs(ents.FindByClass("prop_dynamic")) do
+if Confisc:GetPos() == Vector(7616, -1086, 2264) and Confisc:GetSkin() == 1 then
+// Here, we get the objects specific spot
+// However these require us to get the position of the object in the first place
+	ActiveObjective = "- Do Stuff\n- Disable the forcefield - Objective Complete"
+	DeathObjective = "- Do Stuff - Objective Failed"
+	RemoveDelay = CurTime() + 5
+	CurObjMarker = CurObjMarker +  1
+end
+end
+// It should be noted that this only works for static objects, not ones that can be moved by a player
+// Or any other outside force. It should only be static world objects
+
+// To retrieve the position of an object (among other things) use the EntCheck command, supplied alongside the templates
+
+// Alternatively, we can use the (in)existence of an object
+// As such:
+
+for _,WallRemoved in pairs(ents.FindByClass("func_breakable")) do
+// A breakable wall that is removed after a certain in-map trigger is activated
+if WallRemoved:GetPos() == Vector(1729.000000, -2048.000000, 1600.000000) then
+// We get the specific position, to ensure the code properly recognizes the object
+	WallCheck = WallRemoved
+// Make it a variable we can identify later
+end
+end
+
+if IsValid(WallCheck) then
+// Does the wall exist? If yes then do this:
+	ActiveObjective = "- Do stuff\n- Do other stuff"
+	DeathObjective = "- Do stuff - Objective Failed\n- Do other stuff - Objective Failed"
+else // If the wall no longer exists, do this:
+	ActiveObjective = "- Do stuff\n- Do other stuff - Objective Complete"
+	DeathObjective = "- Do stuff - Objective Failed"
+	CurObjMarker = CurObjMarker + 1
+	RemoveDelay = CurTime() + 5
+end
+
+// This is perhaps the most interesting thing you can do
+// NPC-Health as an objective
+// It should be noted that this has limited functionality, because the code for it is wonky at best
+// It works best on humanoid NPC's (Combine, Citizens, Important NPCs [Kleiner, Barney, Alyx, Grigori etc.] and for whatever reason Hunters)
+
+// We look for Father Grigori, an dsee if he's a valid object on the map
+for _,GrigoriAlive in pairs(ents.FindByClass( "npc_monk" )) do
+	GrigoriHP = (GrigoriAlive:Health() / GrigoriAlive:GetMaxHealth()) * 100
+	GrigoriCheck = GrigoriAlive
+// Define the NPC existense and create the health value
+
+if GetConVar("ObjSysNoNPCMarker"):GetInt() == 0 and CurObjMarker < 6 then
+	SubObjSpot = GrigoriAlive:EyePos() + Vector(0,0,10)
+else
+	SubObjSpot = nil
+end
+// Create a green marker over the NPC's head
+// We use EyePos, because it's a more accurate representation of the NPC's head position
+// Which accounts for height, and crouching
+
+// Here, we activate the text
+if IsValid(GrigoriCheck) then
+
+// It's worth noting that the existence of Grigori should not be the only defining factor
+// We should use something other alongside it, for example the CurObjMarker value
+// if IsValid(GrigoriCheck) and CurObjMarker > 2 then
+
+	ActiveObjective = "- Keep Father Grigori Alive - HP: " .. GrigoriHP .. " %"
+else
+
+//elseif !IsValid(GrigoriCheck) or CurObjMarker < 6 then
+	ActiveObjective = "- Keep Father Grigori Alive - Objective Failed"
+
+end
+end

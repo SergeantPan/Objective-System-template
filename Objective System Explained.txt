@@ -1,0 +1,117 @@
+// This is a regular objective point
+
+if CurObjMarker == 1 then
+// CurObjMarker defines the objective the player is at
+
+	CurObjSpot = Vector(640, -7432, -100)
+// CurObjSpot refers to the orange marker
+// It gives the player an idea of where they should go
+
+	CurObjTriggerSpot = (XPos == math.Clamp(XPos, 598, 669) and YPos == math.Clamp(YPos, -7453, -7387))
+// CurObjTriggerSpot refers to a set of coordinates in the map, where CurObjMarker goes up a number
+// So, if the player reaches this first point on the map, the CurObjMarker will go up to 2
+end
+
+if CurObjMarker == 2 then
+	CurObjSpot = Vector(-314, -7360, -100)
+	CurObjTriggerSpot = (XPos == math.Clamp(XPos, -360, -280) and YPos == math.Clamp(YPos, -7396, -7329))
+// The marker and TriggerSpot will update to these new coordinates
+end
+
+// So, for repetitions sake
+
+// CurObjMarker = The value of the currently active Objective Marker and Trigger Spot
+// CurObjSpot = Where the orange marker appears
+// CurObjTriggerSpot = The area the player has to reach in order to start the next CurObjMarker
+
+// This is how we apply a SubObjective (the green marker) and have it properly disappear once the player reaches it
+
+if CurObjMarker == 3 then
+	CurObjTriggerSpot = nil
+// Disable CurObjTriggerSpot to ensure the code doesnt accidentally skip this one
+	SubObjSpot = Vector(280, -6800, 520)
+// The position of the marker
+	CurObjMarker = CurObjMarker + 1
+// And now do this to ensure the next ObjMarker is triggered
+end
+
+// Now that the marker is placed, we need to define a position that removes the marker
+
+if CurObjMarker == 4 then
+	CurObjSpot = Vector(395, -7010, 532)
+	CurObjTriggerSpot = (XPos == math.Clamp(XPos, 388, 448) and YPos == math.Clamp(YPos, -7115, -6950))
+	SubObjTriggerSpot = (XPos == math.Clamp(XPos, 260, 380) and YPos == math.Clamp(YPos, -7000, -6600))
+// SubObjTriggerSpot refers to the position that disables the green marker
+end
+
+// If the player reaches an objective that is outside the reach of the 'Sub Objective'
+// Or simply goes too far from the position, we simply disable the marker
+// Like this;
+
+if CurObjMarker == 5 then
+	CurObjTriggerSpot = nil
+	SubObjSpot = nil
+// We set SubObjSpot to nil, which removes the marker position
+	SubObjective = string.gsub(SubObjective, "%\n%- Do a Side Thing", "%\n%- Do a Side Thing - Objective Failed")
+// And we give it the Objective Failed text, to signify that the player missed their opportunity
+	RemoveDelay = CurTime() + 5
+	CurObjMarker = CurObjMarker + 1
+// Delay to remove the text, and proceed to the next marker
+end
+
+// Now, we can update the objective
+
+if CurObjMarker == 7 then
+	ActiveObjective = "- A New Objective is added"
+	DeathObjective = "- A New Objective is added - Objective Failed"
+// We simply re-define Active/DeathObjective as a new value
+// Now, the objective will display '- A New Objective is added'
+// Instead of what was applied before
+	CurObjSpot = Vector(699, -3455, 404)
+	CurObjTriggerSpot = (XPos == math.Clamp(XPos, 657, 735) and YPos == math.Clamp(YPos, -3497, -3422))
+end
+
+// And if we want the objective to be complete?
+// We do this
+
+if CurObjMarker == 8 then
+	CurObjTriggerSpot = nil
+	ActiveObjective = "- A New Objective is added - Objective Complete"
+	DeathObjective = "- A second Objective is added - Objective Failed"
+// Add the suffix and update DeathObjective to represent the new objective to be added
+	RemoveDelay = CurTime() + 5
+// RemoveDelay will replace the text after the delay is over
+	CurObjMarker = CurObjMarker + 1
+// Move forward, yet again
+end
+
+// Objective text is updated at the end of the Template file, but we can do a quick preview here
+
+if RemoveDelay < CurTime() then
+	ActiveObjective = string.gsub(ActiveObjective, "%- A New Objective is added %- Objective Complete", "- A second Objective is added")
+// This replaces the text with a new value
+// However, if we want to simply remove the text, we do this
+	ActiveObjective = string.gsub(ActiveObjective, "%- A second Objective is added %- Objective Complete", "")
+// Take note that we have to use % before a -, otherwise the system fails to detect the text properly
+// Blame LUA for this
+	SubObjective = string.gsub(SubObjective, "%\n%- Destroy the Gunship %- Objective Complete", "")
+end
+
+// And now, we add a Side Objective
+
+if CurObjMarker == 8 then
+	CurObjTriggerSpot = nil
+	SubObjective = "\n- Do a Side Thing"
+// Use \n at the beginning, otherwise the text wont display properly
+// We do this, because SubObjective text is handled differently compared to ActiveObjective
+// Makes it easier to format the text
+// Because otherwise, if we don't use \n, the text will overlap with the Side Objective text
+	CurObjMarker = CurObjMarker + 1
+end
+
+// And then we reach the final marker
+// This disables the orange marker and signifies the end of the map
+if CurObjMarker == 10 then
+	CurObjSpot = nil
+	CurObjTriggerSpot = nil
+end

@@ -1,0 +1,38 @@
+// This is a briew overview on how to use the position commands for creating Trigger and ObjMarker positions
+// You will use the following commands;
+
+EnableZFactor = Enable/Disable ZPos as a factor for the coordinates
+
+// If you want to have the players vertical position as a factor, set this to 1
+// Best used for maps with lots of verticality in order to avoid triggering positions
+// Above or below the player
+
+MarkObjSpot = Create a coordinate position for the ObjMarker (the orange icon)
+
+// To best use this command, aim at the ground
+// Aiming at the wall or an elevated position may cause incorrect positioning
+
+MarkObjPos1/2 = Mark the corners of a ObjTriggerSpot to create a rectangular position
+
+// I recommend having the position be very lenient, to ensure the player properly triggers the objective
+// To best explain it, imagine this:
+
+// You are in a perfectly square room
+// The Objective Marker goes in the center of the room
+// The MarkObjPos should be positioned against the left and right walls
+// The first one should be slightly behind the marker
+// And the second one slightly in front of the marker
+
+CreateObjPos = Create the formatted position
+
+// This requires both MarkObjPos' to be used, and a CurObjSpot to be marked
+// This will automatically create a formatted coordinates prompt in the console
+
+CreateTriggerSpot = This will create a CurObjTriggerSpot based on the MarkObjPos you've set up
+
+// This does not require a CurObjmarker to be set
+
+MarkSubObjSpot = Create a coordinate position for the green marker
+
+// This should be aimed at the object or wall you want to signify as an object of interest
+// Unlike the CurObjMarker, this position puts the marker directly on the position you marked
