@@ -95,7 +95,7 @@ end
 // It should be noted that this has limited functionality, because the code for it is wonky at best
 // It works best on humanoid NPC's (Combine, Citizens, Important NPCs [Kleiner, Barney, Alyx, Grigori etc.] and for whatever reason Hunters)
 
-// We look for Father Grigori, an dsee if he's a valid object on the map
+// We look for Father Grigori, and see if he's a valid object on the map
 for _,GrigoriAlive in pairs(ents.FindByClass( "npc_monk" )) do
 	GrigoriHP = (GrigoriAlive:Health() / GrigoriAlive:GetMaxHealth()) * 100
 	GrigoriCheck = GrigoriAlive
@@ -118,9 +118,11 @@ if IsValid(GrigoriCheck) then
 // if IsValid(GrigoriCheck) and CurObjMarker > 2 then
 
 	ActiveObjective = "- Keep Father Grigori Alive - HP: " .. GrigoriHP .. " %"
-else
 
-//elseif !IsValid(GrigoriCheck) or CurObjMarker < 6 then
+elseif !IsValid(GrigoriCheck) and CurObjmarker < 6 then
+// Fatber Grigori no longer exists (I.e. he's dead)
+// Therefore, the objective fails
+
 	ActiveObjective = "- Keep Father Grigori Alive - Objective Failed"
 
 end
