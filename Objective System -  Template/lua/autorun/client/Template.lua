@@ -191,8 +191,9 @@ if RemoveDelay < CurTime() then
 	SubObjective = string.gsub(SubObjective, "%\n%- Do a Side Thing %- Objective Failed", "")
 end
 // This is where we remove objective text, and either replace it or remove it
-// Note that objectives that all text should be accounted for
+// Note that the whole line has to be accounted for
 // In this case, Objective Failed/Complete triggers
+// Otherwise the text will remain and ruin the appearance
 
 cam.Start3D()
 if CurObjSpot != nil then
