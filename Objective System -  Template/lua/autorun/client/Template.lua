@@ -93,7 +93,7 @@ local Marker = Material("ping.png")
 // This is the "Go here" orange marker
 
 local CuriosityMarker = Material("locationping.png")
-// This is the green "Cool stuff here" green marker
+// This is the "Cool stuff here" green marker
 
 // Here, we start the objective system itself
 // CurObjMarker refers to the numerical value of each position
@@ -113,6 +113,7 @@ end
 if CurObjMarker == 3 then
 	CurObjTriggerSpot = nil
 	SubObjSpot = Vector(280, -6800, 520)
+	SubObjective = "\n- Do a Side Thing"
 	CurObjMarker = CurObjMarker + 1
 end
 // Here, we create a green marker for a unique location
