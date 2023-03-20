@@ -19,9 +19,8 @@ MarkObjPos1/2 = Mark the corners of a ObjTriggerSpot to create a rectangular pos
 
 // You are in a perfectly square room
 // The Objective Marker goes in the center of the room
-// The MarkObjPos should be positioned against the left and right walls
-// The first one should be slightly behind the marker
-// And the second one slightly in front of the marker
+// MarkObjPos1 should be positioned against the North-East/West corner
+// MarkObjPos2 should be positioned against the South-West/East corner (directly opposite to where MarkObjPos1 is)
 
 CreateObjPos = Create the formatted position
 
